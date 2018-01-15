@@ -1,0 +1,382 @@
+<?php 
+	session_start();
+	if ($_SESSION['ad_add'] == 2) {
+		unset($_SESSION['ad_add']);
+		echo "<script>";
+		echo "document.addEventListener('DOMContentLoaded', function(){";
+		echo "alert('Подтвердите, что вы человек!');});";
+		echo "</script>";
+	}
+	elseif ($_SESSION['ad_add'] == 3) {
+		unset($_SESSION['ad_add']);
+		echo "<script>";
+		echo "document.addEventListener('DOMContentLoaded', function(){";
+		echo "alert(\"Вы не заполнили поле '".$_SESSION['ad_er']."'\");";
+		echo "});";
+		echo "</script>";
+		unset($_SESSION['ad_er']);
+	}
+?>
+<?php
+/**
+ * Template Name: Template About (sell)
+ */
+get_header(); ?>
+	<!-- Content -->
+	<div class="wraper main_area">
+		<div class="col-lg-9 work_area">
+			<div class="add_sell">
+				<form action="<?php bloginfo('template_url'); ?>/handler-blurbs.php" method="POST" enctype="multipart/form-data">
+					<div id="titlewrap">
+						<input type="text" name="post_title" placeholder="Введите название своего бизнеса" id="title" required>
+					</div>
+					<div class="inside">
+						<div class="meta_caption meta_caption_close" id="meta_caption">Общее/Характеристики</div>
+						<table class="form-table" id="form_content">
+							<tbody>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_bus_type">Тип продаваемого бизнеса</label>
+									</th>
+									<td>
+										<?php 
+										$post_type = 'blurbs'; // наш произвольный тип записи
+										if( is_object_in_taxonomy( $post_type, 'blurbs-type' ) ){
+											$dropdown_options = array(
+												'show_option_all'    => '',
+												'show_option_none'   => '',
+												'hide_empty'      => 0,
+												'hierarchical'    => 1,
+												'show_count'      => 0,
+												'orderby'         => 'name',
+												'name' => 'ale_bus_type',
+												'id' => 'ale_bus_type',
+												'taxonomy' => 'blurbs-type',
+												'value_field' => 'name',
+											);
+											wp_dropdown_categories( $dropdown_options );
+										} ?>
+										<p class="ale_metabox_description">Выберите тип</p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_category">Категория бизнеса:</label>
+									</th>
+									<td>
+										<?php 
+										$post_type = 'blurbs'; // наш произвольный тип записи
+										if( is_object_in_taxonomy( $post_type, 'blurbs-category' ) ){
+											$dropdown_options = array(
+												'show_option_all'    => '',
+												'show_option_none'   => '',
+												'hide_empty'      => 0,
+												'hierarchical'    => 1,
+												'show_count'      => 0,
+												'orderby'         => 'name',
+												'name' => 'ale_category',
+												'id' => 'ale_category',
+												'taxonomy' => 'blurbs-category',
+												'value_field' => 'name',
+											);
+											wp_dropdown_categories( $dropdown_options );
+										} ?>
+										<p class="ale_metabox_description">Выберите категорию</p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_areal">Расположение бизнеса:</label>
+									</th>
+									<td>
+										<?php 
+										$post_type = 'blurbs'; // наш произвольный тип записи
+										if( is_object_in_taxonomy( $post_type, 'blurbs-areal' ) ){
+											$dropdown_options = array(
+												'show_option_all'    => '',
+												'show_option_none'   => '',
+												'hide_empty'      => 0,
+												'hierarchical'    => 1,
+												'show_count'      => 0,
+												'orderby'         => 'name',
+												'name' => 'ale_areal',
+												'id' => 'ale_areal',
+												'taxonomy' => 'blurbs-areal',
+												'value_field' => 'name',
+											);
+											wp_dropdown_categories( $dropdown_options );
+										} ?>
+										<p class="ale_metabox_description">Выберите расположение</p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_location">Подробное описание местоположения (поселок, улица, дом):</label>
+									</th>
+									<td>
+										<input type="text" name="ale_location" id="ale_location" value="">
+										<p class="ale_metabox_description"></p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+									<label for="ale_busurl">Сайт</label>
+									</th>
+										<td>
+											<input type="text" name="ale_busurl" id="ale_busurl" value="">
+										<p class="ale_metabox_description">Введите URL вашего сайта</p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_share">Продаваемая доля:</label>
+									</th>
+									<td>
+										% <input class="ale_number" type="number" name="ale_share" id="ale_share" value="" required="required" ><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_reason">Причина продажи:</label>
+									</th>
+									<td>
+										<input type="text" name="ale_reason" id="ale_reason" value="" required="required">
+										<p class="ale_metabox_description"></p>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_busimg">Добавить фотографию</label>
+									</th>
+									<td>
+										<div class="file-upload">
+											<label>
+												<input type="file" id="files" name="ale_busimg[]" multiple accept="image/*" required="required" />
+												<?php wp_nonce_field( 'ale_busimg', 'ale_busimg_nonce' ); ?>
+												<span>Загрузить файл</span>
+											</label>
+										</div>
+										<output id="fileList"></output>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_datefield">Описание товара:</label>
+									</th>
+									<td>
+										<textarea rows="10" name="ale_datefield" required="required"></textarea>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="inside">
+						<div class="meta_caption meta_caption_close">Финансы</div>
+						<table class="form-table">
+							<tbody>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_cost">Цена продаваемого бизнеса:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="number" name="ale_cost" id="ale_cost" required="required"> грн.<br>
+										<span class="ale_metabox_description">Введите желаемую цену</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_proceeds_year">Выручка за год:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="number" name="ale_proceeds_year" id="ale_proceeds_year"> грн.<br>
+										<span class="ale_metabox_description">Введите желаемую выручку</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_proceeds_mouth">Выручка в месяц:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="number" name="ale_proceeds_mouth" id="ale_proceeds_mouth" required="required"> грн.<br>
+										<span class="ale_metabox_description">Введите желаемую выручку</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_salary">Фонд заработной платы в месяц:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="number" name="ale_salary" id="ale_salary"> грн.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_lease">Арендная плата в месяц:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="number" name="ale_lease" id="ale_lease"	> грн.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="inside">
+						<div class="meta_caption meta_caption_close">Контакты</div>
+						<table class="form-table">
+							<tbody>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_name_user">ФИО:</label>
+									</th>
+									<td>
+										<input type="text" name="ale_name_user" id="ale_name_user" required="required">
+										<span class="ale_metabox_description">Введите полное фамилию, имя и отчество</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label class="req_pole" for="ale_email_user">Контактный E-mail:</label>
+									</th>
+									<td>
+										<input class="ale_number_uan" type="email" name="ale_email_user" id="ale_email_user" required="required"><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_phone_user">Контактный номер телефона:</label>
+									</th>
+									<td>
+										+380 <input class="ale_number_phone" type="number" name="ale_phone_user" id="ale_phone_user"><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="inside">
+						<div class="meta_caption meta_caption_close">Общие средства</div>
+						<table class="form-table">
+							<tbody>
+								<tr>
+									<th>
+										<label for="ale_own_sq">Общая площадь недвижимости в собственности:</label>
+									</th>
+									<td>
+										<input class="ale_number_square" type="number" name="ale_own_sq" id="ale_own_sq"> кв.м.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_lease_sq">Общая площадь недвижимости в аренде:</label>
+									</th>
+									<td>
+										<input class="ale_number_square" type="number" name="ale_lease_sq" id="ale_lease_sq"> кв.м.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_contract_end">Срок окончания договора аренды недвижимости:</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_contract_end" id="ale_contract_end"><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_own_area_sq">Общая площадь земельных участков в собственности:</label>
+									</th>
+									<td>
+										<input class="ale_number_square" type="number" name="ale_own_area_sq" id="ale_own_area_sq"> кв.м.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_lease_area_sq">Общая площадь земельных участков в аренде:</label>
+									</th>
+									<td>
+										<input class="ale_number_square" type="number" name="ale_lease_area_sq" id="ale_lease_area_sq"> кв.м.<br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_equipment">Оборудование:</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_equipment" id="ale_equipment"><br>
+										<span class="ale_metabox_description">Основное технологическое оборудование</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_cars">Количество автотранспорта, шт.</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_cars" id="ale_cars"><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_assets">Нематериальные активы:</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_assets" id="ale_assets"><br>
+										<span class="ale_metabox_description">Наличие зарегистрированных товарных знаков, лицензий и т.д.</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="inside">
+						<div class="meta_caption meta_caption_close">Дополнительная информация</div>
+						<table class="form-table">
+							<tbody>
+								<tr>
+									<th>
+										<label for="ale_term">Срок окупаемости для покупателя:</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_term" id="ale_term"><br>
+										<span class="ale_metabox_description">Срок указывать в месяцах</span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_qt_worker">Количество сотрудников, чел.</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_qt_worker" id="ale_qt_worker"><br>
+										<span class="ale_metabox_description"></span>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<label for="ale_lifetime">Срок существования бизнеса:</label>
+									</th>
+									<td>
+										<input class="ale_number" type="number" name="ale_lifetime" id="ale_lifetime"><br>
+										<span class="ale_metabox_description">Срок указывать в месяцах</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="g-recaptcha" data-sitekey="6Le3XjgUAAAAAGDrcrdzWgMZIKyqlpBa9XNMfEM1" id=''></div>
+					
+					<button id="btn-rnd" class="btn btn-info" name="send">Добавить</button>
+				</form>
+			</div>
+		</div>
+		<?php get_sidebar() ?>
+	</div>
+
+<?php get_footer(); ?>
